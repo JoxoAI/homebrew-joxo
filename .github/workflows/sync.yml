@@ -2,7 +2,7 @@ name: Sync the cask with the latest release
 on:
   workflow_dispatch:
   schedule:
-    - cron: '17 */6 * * *'
+    - cron: '*/15 * * * *'
 permissions:
   contents: write
 jobs:
