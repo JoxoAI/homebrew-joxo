@@ -1,0 +1,26 @@
+name: Sync the cask with the latest release
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */6 * * *'
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/sync-cask.mjs
+      - name: Commit when the release moved
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then echo 'Nothing changed.'; exit 0; fi
+          git config user.name 'joxo-release-bot'
+          git config user.email 'support@joxo.ai'
+          git add Casks/joxo.rb
+          git commit -m "cask: $(grep -o 'version "[^"]*"' Casks/joxo.rb)"
+          git push
