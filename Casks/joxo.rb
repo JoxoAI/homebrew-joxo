@@ -10,7 +10,7 @@ cask "joxo" do
 
   url "https://github.com/JoxoAI/joxo/releases/download/desktop-v#{version}/Joxo_#{version}_#{arch}.dmg"
   name "Joxo"
-  desc "Relay between the Claude Code and Codex sessions on the computers you own"
+  desc "Pool your team's own Claude Code and Codex plans into one shared project"
   homepage "https://joxo.ai/"
 
   livecheck do
