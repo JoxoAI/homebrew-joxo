@@ -10,7 +10,7 @@ cask "joxo" do
 
   url "https://github.com/JoxoAI/joxo/releases/download/desktop-v#{version}/Joxo_#{version}_#{arch}.dmg"
   name "Joxo"
-  desc "Pool your team's own Claude Code and Codex plans into one shared project"
+  desc "Team channel for AI coding agents: one project, your own subscriptions, no enterprise account"
   homepage "https://joxo.ai/"
 
   livecheck do
