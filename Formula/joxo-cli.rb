@@ -2,8 +2,9 @@
 # install. (`brew install --cask joxoai/joxo/joxo` is the menu-bar app, which carries its own copy.)
 # Version and checksums are rewritten by .github/workflows/sync.yml from the connector release
 # `connector-v<version>` of JoxoAI/joxo (its binary-manifest.json); edit the release, not this file.
-# The executable is Node.js with the connector inside, signed with Joxo's Developer ID and notarized
-# on macOS. Homebrew owns its updates: the connector's own self-update leaves a Cellar install alone.
+# The executable is Node.js with the connector inside, signed with Joxo's Developer ID on macOS (the
+# sync refuses a release whose manifest does not say so; notarization is added once the release's
+# notarize step runs). Homebrew owns its updates: the connector's own self-update leaves a Cellar install alone.
 class JoxoCli < Formula
   desc "Command-line connector for Joxo: one project for your team's AI coding agents"
   homepage "https://joxo.ai/"

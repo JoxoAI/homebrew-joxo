@@ -5,6 +5,7 @@ on:
     - cron: '*/15 * * * *'
 permissions:
   contents: write
+  pull-requests: write
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -15,14 +16,34 @@ jobs:
         with:
           node-version: 22
       - run: node scripts/sync-cask.mjs
-      - run: node scripts/sync-formula.mjs
-        continue-on-error: true # the cask above must still be committed if the connector release is incomplete
-      - name: Commit when the release moved
+      - name: Commit the cask when its release moved
         run: |
           set -euo pipefail
-          if git diff --quiet; then echo 'Nothing changed.'; exit 0; fi
+          if git diff --quiet -- Casks/joxo.rb; then echo 'Cask unchanged.'; exit 0; fi
           git config user.name 'joxo-release-bot'
           git config user.email 'support@joxo.ai'
-          git add Casks/joxo.rb Formula/joxo-cli.rb
-          git commit -m "sync: cask $(grep -o 'version "[^"]*"' Casks/joxo.rb), formula $(grep -o '^  version "[^"]*"' Formula/joxo-cli.rb | tr -d ' ')"
+          git add Casks/joxo.rb
+          git commit -m "sync: cask $(grep -o 'version "[^"]*"' Casks/joxo.rb)"
           git push
+      # The formula installs an executable on people's computers, so a change to it is reviewed:
+      # the sync opens a pull request and never pushes it to main.
+      - run: node scripts/sync-formula.mjs
+        continue-on-error: true # the cask above is already committed if the connector release is incomplete
+      - name: Open a pull request when the formula's release moved
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- Formula/joxo-cli.rb; then echo 'Formula unchanged.'; exit 0; fi
+          version=$(grep -o '^  version "[^"]*"' Formula/joxo-cli.rb | grep -o '"[^"]*"' | tr -d '"')
+          branch="sync/formula-$version"
+          git config user.name 'joxo-release-bot'
+          git config user.email 'support@joxo.ai'
+          git checkout -B "$branch"
+          git add Formula/joxo-cli.rb
+          git commit -m "sync: formula $version"
+          git push --force-with-lease origin "$branch"
+          if [ -z "$(gh pr list --head "$branch" --state open --json number -q '.[0].number')" ]; then
+            gh pr create --base main --head "$branch" --title "Formula joxo-cli $version" \
+              --body "Synced from the connector-v$version release: version and SHA-256s, taken from its signed binary-manifest.json. Review, then merge."
+          fi

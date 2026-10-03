@@ -22,4 +22,5 @@ Homebrew owns its updates (`brew upgrade joxo-cli`); the connector's own self-up
 
 This tap is maintained automatically: `.github/workflows/sync.yml` rewrites the cask's version and
 checksums from the latest published desktop release of `JoxoAI/joxo`, and the formula's from the latest
-`connector-v<version>` release (its `binary-manifest.json`).
+highest `connector-v<version>` release (its signed `binary-manifest.json`). The cask is committed to
+`main`; a formula change arrives as a pull request to review, never as a push.
