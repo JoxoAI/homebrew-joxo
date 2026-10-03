@@ -1,4 +1,4 @@
-name: Sync the cask with the latest release
+name: Sync the cask and the formula with the latest releases
 on:
   workflow_dispatch:
   schedule:
@@ -15,12 +15,14 @@ jobs:
         with:
           node-version: 22
       - run: node scripts/sync-cask.mjs
+      - run: node scripts/sync-formula.mjs
+        continue-on-error: true # the cask above must still be committed if the connector release is incomplete
       - name: Commit when the release moved
         run: |
           set -euo pipefail
           if git diff --quiet; then echo 'Nothing changed.'; exit 0; fi
           git config user.name 'joxo-release-bot'
           git config user.email 'support@joxo.ai'
-          git add Casks/joxo.rb
-          git commit -m "cask: $(grep -o 'version "[^"]*"' Casks/joxo.rb)"
+          git add Casks/joxo.rb Formula/joxo-cli.rb
+          git commit -m "sync: cask $(grep -o 'version "[^"]*"' Casks/joxo.rb), formula $(grep -o '^  version "[^"]*"' Formula/joxo-cli.rb | tr -d ' ')"
           git push
