@@ -4,9 +4,9 @@
 cask "joxo" do
   arch arm: "aarch64", intel: "x64"
 
-  version "0.2.62"
-  sha256 arm:   "09aec16d4e891802acf5c80cba65024cc8874898d42589b7373599dc5f1d1f32",
-         intel: "7b7e9f2e88526f8eaeaa0ee1333dc243c51921b04072f8abe28b4db09445895d"
+  version "0.2.63"
+  sha256 arm:   "11714adf5c83e0af423efeba4dd6211a423aac80a1e88c0eccf2cbfa96948c95",
+         intel: "fca4fa21be40e2a0c619ede287a9a5acc3dc258167662e8b5caa7b3c6534bf03"
 
   url "https://github.com/JoxoAI/joxo/releases/download/desktop-v#{version}/Joxo_#{version}_#{arch}.dmg"
   name "Joxo"
